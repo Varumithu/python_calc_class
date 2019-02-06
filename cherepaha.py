@@ -1,4 +1,8 @@
 import random
+import graphics
+
+from graphics import Line
+from graphics import Point
 
 
 class Cherepaha:
@@ -21,6 +25,7 @@ def cherepaha_step(cherepaha: Cherepaha):
 
 
 def cherepaha_sim(amount):
+    graphwin = graphics.GraphWin()
     turtles = []
     random.seed()
     for i in range(amount):
@@ -35,7 +40,13 @@ def cherepaha_sim(amount):
         # simulation steps
 
         for j in turtles:
+            oldx = j.x
+            oldy = j.y
             cherepaha_step(j)
+            aline = graphics.Line(Point(oldx, oldy), Point(j.x, j.y))
+            aline.draw(graphwin)
+    while input() != 'q':
+        pass
 
 
 cherepaha_sim(10)
