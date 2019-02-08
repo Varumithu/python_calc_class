@@ -1,5 +1,7 @@
 import random
 import graphics
+import time
+import math
 
 from graphics import Line
 from graphics import Point
@@ -9,6 +11,21 @@ class Cherepaha:
     x = 0.0
     y = 0.0
     speed = 1.0
+    delta_x = 0
+    delta_y = 0
+
+    def step(self):
+        self.x += self.delta_x
+        self.y += self.delta_y
+
+        start_x = self.x
+        start_y = self.y
+
+        x_diff = self.tracked.x - start_x
+        y_diff = self.tracked.y - start_y
+        angle = math.atan2(y_diff, x_diff)
+        self.delta_x = math.cos(angle) * self.speed
+        self.delta_y = math.sin(angle) * self.speed
 
 
 Cherepaha.tracked = Cherepaha()
@@ -25,13 +42,13 @@ def cherepaha_step(cherepaha: Cherepaha):
 
 
 def cherepaha_sim(amount):
-    graphwin = graphics.GraphWin()
+    graphwin = graphics.GraphWin('Cherepaha', 400, 400)
     turtles = []
     random.seed()
     for i in range(amount):
         turtles.append(Cherepaha())
-        turtles[i].x = random.uniform(0.0, 10.0)
-        turtles[i].y = random.uniform(0.0, 10.0)
+        turtles[i].x = random.uniform(0.0, 100.0)
+        turtles[i].y = random.uniform(0.0, 100.0)
         if i > 0:
             turtles[i - 1].tracked = turtles[i]
     turtles[amount - 1].tracked = turtles[0]
@@ -40,13 +57,14 @@ def cherepaha_sim(amount):
         # simulation steps
 
         for j in turtles:
-            oldx = j.x
-            oldy = j.y
-            cherepaha_step(j)
-            aline = graphics.Line(Point(oldx, oldy), Point(j.x, j.y))
-            aline.draw(graphwin)
-    while input() != 'q':
-        pass
+            # oldx = j.x
+            # oldy = j.y
+            j.step()
+            # aline = Line(Point(oldx, oldy), Point(j.x, j.y))
+            # aline.draw(graphwin)
+            Point(j.x, j.y).draw(graphwin)
+        time.sleep(0.1)
+    graphwin.getKey()
 
 
 cherepaha_sim(10)
